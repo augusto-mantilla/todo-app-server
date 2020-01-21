@@ -1,0 +1,5 @@
+* TODO Send to the client the data in json format
+* TODO Implement websockets
+[[https://godoc.org/github.com/gorilla/websocket][gorilla/websocket]]
+* TODO Implement persistent storage
+[[https://github.com/patrickmn/go-cache][go-cache]]
