@@ -1,14 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
-
-	"net/http"
 )
 
 type Todos struct {
@@ -25,9 +24,9 @@ type TodoItem struct {
 }
 
 var (
-	dbUser     = os.Getenv("DB_USER_TODO_APP")     // todo
-	dbPassword = os.Getenv("DB_PASSWORD_TODO_APP") // todoPass
-	dbName     = os.Getenv("DB_NAME_TODO_APP")     // todoDb
+	dbUser     = os.Getenv("DB_USER_TODO_APP") // todo
+	dbPassword = os.Getenv("DB_PASSWORD_TODO_APP")
+	dbName     = os.Getenv("DB_NAME_TODO_APP") // todoDb
 	todoItems  []TodoItem
 	todos      map[string][]TodoItem
 	states     = [...]string{"toRequest", "requested", "onDelivery", "delivered"}
@@ -44,10 +43,9 @@ func main() {
 	// "@tcp(localhost:3306)/" + dbName)
 	fillDummieData()
 	organizeTodos()
-	fmt.Println(todos)
-	http.HandleFunc("/", handleHome)
-	http.HandleFunc("/scripts/", serveFile)
-	http.HandleFunc("/styles/", serveFile)
+
+	http.HandleFunc("/", serveFile)
+	http.HandleFunc("/data", serveData)
 	http.HandleFunc("/id", func(w http.ResponseWriter, r *http.Request) {
 		id++
 		w.Write([]byte(strconv.Itoa(id)))
@@ -85,9 +83,8 @@ func check(err error) {
 	}
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templates/index.html")
+func serveData(w http.ResponseWriter, r *http.Request) {
+	b, err := json.Marshal(todos)
 	check(err)
-	err = t.Execute(w, todos)
-	check(err)
+	w.Write(b)
 }

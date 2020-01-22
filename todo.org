@@ -1,4 +1,4 @@
-* TODO Send to the client the data in json format
+* DONE Send to the client the data in json format
 * TODO Implement websockets
 [[https://godoc.org/github.com/gorilla/websocket][gorilla/websocket]]
 * TODO Implement persistent storage
